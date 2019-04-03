@@ -1,0 +1,969 @@
+--- dbscripts/identity/mysql-5.7.sql
++++ dbscripts/identity/mysql-5.7.sql
+@@ -299,6 +299,15 @@
+
+ ALTER TABLE SP_FEDERATED_IDP ADD CONSTRAINT STEP_ID_CONSTRAINT FOREIGN KEY (ID) REFERENCES SP_AUTH_STEP (ID) ON DELETE CASCADE;
+
++CREATE TABLE IF NOT EXISTS SP_CLAIM_DIALECT (
++	   	ID INTEGER NOT NULL AUTO_INCREMENT,
++	   	TENANT_ID INTEGER NOT NULL,
++	   	SP_DIALECT VARCHAR (512) NOT NULL,
++	   	APP_ID INTEGER NOT NULL,
++	   	PRIMARY KEY (ID));
++
++ALTER TABLE SP_CLAIM_DIALECT ADD CONSTRAINT DIALECTID_APPID_CONSTRAINT FOREIGN KEY (APP_ID) REFERENCES SP_APP (ID) ON DELETE CASCADE;
++
+ CREATE TABLE IF NOT EXISTS SP_CLAIM_MAPPING (
+             ID INTEGER NOT NULL AUTO_INCREMENT,
+             TENANT_ID INTEGER NOT NULL,
+
+--- updates/product.txt
++++ updates/product.txt
+@@ -0,0 +1,2 @@
++wso2is-5.5.0
++
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-openid-remeber-me.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-openid-remeber-me.sql
+@@ -0,0 +1,4 @@
++UPDATE IDN_OPENID_REMEMBER_ME
++SET USER_NAME = `pseudonym`
++WHERE USER_NAME = `username`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-identity-meta-data.sql.properties
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-identity-meta-data.sql.properties
+@@ -0,0 +1,1 @@
++type=DOMAIN_APPENDED
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-oauth1a-access-token.sql.properties
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-oauth1a-access-token.sql.properties
+@@ -0,0 +1,1 @@
++type=DOMAIN_APPENDED
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-identity-meta-data.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-identity-meta-data.sql
+@@ -0,0 +1,4 @@
++UPDATE IDN_IDENTITY_META_DATA
++SET USER_NAME = `pseudonym`
++WHERE USER_NAME =  `username`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-thrift-session.sql.properties
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-thrift-session.sql.properties
+@@ -0,0 +1,1 @@
++type=DOMAIN_APPENDED
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/cm-receipt.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/cm-receipt.sql
+@@ -0,0 +1,4 @@
++UPDATE CM_RECEIPT
++SET PII_PRINCIPAL_ID = `pseudonym`
++WHERE PII_PRINCIPAL_ID = `username`
++      AND PRINCIPAL_TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-saml2-assertion-store.sql.properties
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-saml2-assertion-store.sql.properties
+@@ -0,0 +1,1 @@
++type=DOMAIN_APPENDED
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-oauth1a-access-token.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-oauth1a-access-token.sql
+@@ -0,0 +1,4 @@
++UPDATE IDN_OAUTH1A_ACCESS_TOKEN
++SET AUTHZ_USER = `pseudonym`
++WHERE AUTHZ_USER =  `username`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-openid-users-rps.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-openid-users-rps.sql
+@@ -0,0 +1,4 @@
++UPDATE IDN_OPENID_USER_RPS
++SET USER_NAME = `pseudonym`
++WHERE USER_NAME = `username`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-identity-user-data.sql.properties
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-identity-user-data.sql.properties
+@@ -0,0 +1,1 @@
++type=DOMAIN_APPENDED
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-oauth2-accesstoken.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-oauth2-accesstoken.sql
+@@ -0,0 +1,7 @@
++UPDATE IDN_OAUTH2_ACCESS_TOKEN
++SET AUTHZ_USER = `pseudonym`, SUBJECT_IDENTIFIER = `pseudonym`
++WHERE AUTHZ_USER = `username`
++      AND USER_DOMAIN = `user_store_domain`
++      AND TENANT_ID = `tenant_id`
++
++
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-oauth-consumer-apps.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-oauth-consumer-apps.sql
+@@ -0,0 +1,5 @@
++UPDATE IDN_OAUTH_CONSUMER_APPS
++SET USERNAME = `pseudonym`
++WHERE USERNAME = `username`
++      AND USER_DOMAIN = `user_store_domain`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-associated-id.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-associated-id.sql
+@@ -0,0 +1,5 @@
++UPDATE IDN_ASSOCIATED_ID
++SET USER_NAME = `pseudonym`
++WHERE USER_NAME = `username`
++      AND DOMAIN_NAME = `user_store_domain`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-openid-remeber-me.sql.properties
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-openid-remeber-me.sql.properties
+@@ -0,0 +1,1 @@
++type=DOMAIN_APPENDED
+
+--- dbscripts/identity/mssql.sql
++++ dbscripts/identity/mssql.sql
+@@ -326,6 +326,15 @@
+   CONSTRAINT STEP_ID_CONSTRAINT FOREIGN KEY (ID) REFERENCES SP_AUTH_STEP (ID) ON DELETE CASCADE
+ );
+
++IF NOT  EXISTS (SELECT * FROM SYS.OBJECTS WHERE OBJECT_ID = OBJECT_ID(N'[DBO].[SP_CLAIM_DIALECT]') AND TYPE IN (N'U'))
++CREATE TABLE SP_CLAIM_DIALECT (
++  ID INTEGER NOT NULL IDENTITY,
++  TENANT_ID INTEGER NOT NULL,
++  SP_DIALECT VARCHAR (512) NOT NULL,
++  APP_ID INTEGER NOT NULL,
++  PRIMARY KEY (ID),
++  CONSTRAINT DIALECTID_APPID_CONSTRAINT FOREIGN KEY (APP_ID) REFERENCES SP_APP (ID) ON DELETE CASCADE
++);
+
+ IF NOT  EXISTS (SELECT * FROM SYS.OBJECTS WHERE OBJECT_ID = OBJECT_ID(N'[DBO].[SP_CLAIM_MAPPING]') AND TYPE IN (N'U'))
+ CREATE TABLE SP_CLAIM_MAPPING (
+
+--- repository/components/tools/forget-me/conf/log-config/apim-patterns.xml
++++ repository/components/tools/forget-me/conf/log-config/apim-patterns.xml
+@@ -48,155 +48,150 @@
+           <replacePattern>(${username}@${tenantDomain}|(from IP address)(.)*)</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern6">
+-        <detectPattern>(.)*(${username}@${tenantDomain}(\s)*(\[)${tenantId}(\])|)(.)*(Failed Administrator login attempt ')${username}(\[)${tenantId}(\]' at)</detectPattern>
+-        <replacePattern>(${username}(\[)${tenantId}(\])(.)*|${username}@${tenantDomain})</replacePattern>
+-      </pattern>
+-
+       <!-- For Carbon Logs -->
+
+-      <pattern key="pattern7">
++      <pattern key="pattern6">
+           <detectPattern>(TID: )\[${tenantId}\](.)*(API : )(${username}|${username}(-AT-)${tenantDomain})(--)(.)*(the Synapse configuration successfully)</detectPattern>
+           <replacePattern>(${username}|${username}(-AT-)${tenantDomain})(--)</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern8">
++      <pattern key="pattern7">
+           <detectPattern>(TID: )\[${tenantId}\](.)*(Initializing API: )(${username}|${username}(-AT-)${tenantDomain})(--)</detectPattern>
+           <replacePattern>(${username}|${username}(-AT-)${tenantDomain})(--)</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern9">
++      <pattern key="pattern8">
+         <detectPattern>(TID: )\[${tenantId}\](.)*${username}@${tenantDomain}(\s)*(\[${tenantId}\](')|)(.)*(logged out)</detectPattern>
+         <replacePattern>${username}@${tenantDomain}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern10">
++      <pattern key="pattern9">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(user :|user=|user|user:|User|User:|Username :)(\s)*${username}(\s)*</detectPattern>
+         <replacePattern>(user :|user=|user|user:|User|User:|Username :)(\s)*${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern11">
++      <pattern key="pattern10">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(\[)(\s)*${username}(\s)*(\])</detectPattern>
+         <replacePattern>(\[)(\s)*${username}(\s)*(\])</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern12">
++      <pattern key="pattern11">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(user ')${username}(')</detectPattern>
+         <replacePattern>(user ')${username}(')</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern13">
++      <pattern key="pattern12">
+         <detectPattern>(TID: )\[${tenantId}\](.)*${username}@${tenantDomain}(\s)\[${tenantId}\](\s)\[AM\]</detectPattern>
+         <replacePattern>${username}@${tenantDomain}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern14">
++      <pattern key="pattern13">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(\()${username}(\))</detectPattern>
+         <replacePattern>(\()${username}(\))</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern15">
++      <pattern key="pattern14">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(subscriber|subscriber:|provider|provider:|login name :|subscribe by)(\s)*${username}</detectPattern>
+         <replacePattern>(Subscriber|subscriber|subscriber:|provider|provider:|login name :|subscribe by)(\s)*${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern16">
++      <pattern key="pattern15">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(/)(${username}|${username}-AT-${tenantDomain})(/)</detectPattern>
+         <replacePattern>(/)(${username}|${username}-AT-${tenantDomain})(/)</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern17">
++      <pattern key="pattern16">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(userName=)${username}</detectPattern>
+         <replacePattern>(userName=)${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern18">
++      <pattern key="pattern17">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(${username}|${username}-AT-${tenantDomain})(-)</detectPattern>
+         <replacePattern>(${username}|${username}-AT-${tenantDomain})(-)</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern19">
++      <pattern key="pattern18">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(get)(.)*( for :)(\s)*${username}</detectPattern>
+         <replacePattern>${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern20">
++      <pattern key="pattern19">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(Application|Application:)(\s)*${username}(_)</detectPattern>
+         <replacePattern>${username}(_)</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern21">
++      <pattern key="pattern20">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(Service Provider)(.)*(name :|to :)(\s)*${username}(_)</detectPattern>
+         <replacePattern>(name :|to :)(\s)*${username}</replacePattern>
+       </pattern>
+
+ <!-- Specific Logs -->
+-      <pattern key="pattern22">
++      <pattern key="pattern21">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(Error while checking user existence for)(\s)*${username}</detectPattern>
+         <replacePattern>${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern23">
++      <pattern key="pattern22">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(Cannot access user profile of :)(\s)*${username}</detectPattern>
+         <replacePattern>${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern24">
++      <pattern key="pattern23">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(Error while retrieving APIs by)(\s)*${username}</detectPattern>
+         <replacePattern>${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern25">
++      <pattern key="pattern24">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(Could not load Subscriber records for:)(\s)*${username}</detectPattern>
+         <replacePattern>${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern26">
++      <pattern key="pattern25">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(User name taken from user info endpoint :)(\s)*${username}</detectPattern>
+         <replacePattern>${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern27">
++      <pattern key="pattern26">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(Adding roles to )${username}(in )${tenantDomain}(\s)(Domain)</detectPattern>
+         <replacePattern>(to )${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern28">
++      <pattern key="pattern27">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(Adding Subscriber role to)(\s)*${username}</detectPattern>
+         <replacePattern>${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern29">
++      <pattern key="pattern28">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(No claim values for user :)(\s)*${userstoreDomain}(/)${username}</detectPattern>
+         <replacePattern>${userstoreDomain}(/)${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern30">
++      <pattern key="pattern29">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(Avoided removing the default app :)(\s)*${username}(_)</detectPattern>
+         <replacePattern>${username}(_)</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern31">
++      <pattern key="pattern30">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(Logged in user is)(\s)*${username}</detectPattern>
+         <replacePattern>${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern32">
++      <pattern key="pattern31">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(API Name: )(.)*(API Version)(.)*(subscription removed from app)(.)*(by)${username}</detectPattern>
+         <replacePattern>(by)${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern33">
++      <pattern key="pattern32">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(session check for)${username}</detectPattern>
+         <replacePattern>${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern34">
++      <pattern key="pattern33">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(Scope retrieval request received from the)(\s)*${username}</detectPattern>
+         <replacePattern>${username}</replacePattern>
+       </pattern>
+
+-      <pattern key="pattern35">
++      <pattern key="pattern34">
+         <detectPattern>(TID: )\[${tenantId}\](.)*(Name of authenticated user from SAML response)(\s)*${username}</detectPattern>
+         <replacePattern>${username}</replacePattern>
+       </pattern>
+
+--- repository/conf/security/certificate-validation.xml
++++ repository/conf/security/certificate-validation.xml
+@@ -0,0 +1,29 @@
++<?xml version="1.0" encoding="ISO-8859-1"?>
++<CertificateValidation xmlns="http://wso2.org/projects/carbon/certificate-validation.xml">
++<Validators>
++	<!-- Validator for validating revocation status of X509 cerificate with CRL -->
++	<Validator name="org.wso2.carbon.identity.x509Certificate.validation.validator.OCSPValidator" displayName="OCSPValidator" enable="true">
++		<!-- Priority of the validator -->
++        	<Parameter name="priority">1</Parameter>
++		<!-- Enable full chain validation, to validate with the CRL of every intermediate certificate within the chain of trust for the client, 		     except for the root CA certificate -->
++        	<Parameter name="fullChainValidation">true</Parameter>
++		<!-- Maximum number of times which we can attempt to download the CRL file -->
++		<Parameter name="retryCount">2</Parameter>
++	</Validator>
++	
++	<!-- Validator for validating revocation status of X509 cerificate with OCSP -->	
++	<Validator name="org.wso2.carbon.identity.x509Certificate.validation.validator.CRLValidator" displayName="CRLValidator" enable="true">
++		<Parameter name="priority">2</Parameter>
++		<Parameter name="fullChainValidation">true</Parameter>
++		<!-- Maximum number of times which we can attempt to get the OCSP response -->
++		<Parameter name="retryCount">2</Parameter>
++	</Validator>
++</Validators>
++
++<!-- Trust stores with certificates of CAs and intermediate CAs which are to be considered as trusted CAs for X509 certificate validation with CRL and OCSP --> 
++<!--TrustStores>
++    <TrustStore truststoreFile="<trustStore_file_path>" truststorePass="<trustStore_password>" type="JKS"/>
++</TrustStores-->
++</CertificateValidation>
++
++
+
+--- repository/conf/identity/identity.xml
++++ repository/conf/identity/identity.xml
+@@ -244,6 +244,23 @@
+                 <GrantTypeValidatorImplClass>org.wso2.carbon.identity.oauth2.grant.jwt.JWTGrantValidator</GrantTypeValidatorImplClass>
+             </SupportedGrantType>
+         </SupportedGrantTypes>
++        <!-- Supported Token Issuer Types -->
++        <!-- Specify the Token issuer classes to be used.
++             Default: org.wso2.carbon.identity.oauth2.token.OauthTokenIssuerImpl.
++             JWT: org.wso2.carbon.identity.oauth2.token.JWTTokenIssuer
++        -->
++        <!--SupportedTokenTypes>
++            <SupportedTokenType>
++                <TokenTypeName>Default</TokenTypeName>
++                <TokenTypeImplClass>org.wso2.carbon.identity.oauth2.token.OauthTokenIssuerImpl</TokenTypeImplClass>
++                <PersistAccessTokenAlias>true</PersistAccessTokenAlias>
++            </SupportedTokenType>
++            <SupportedTokenType>
++                <TokenTypeName>JWT</TokenTypeName>
++                <TokenTypeImplClass>org.wso2.carbon.identity.oauth2.token.JWTTokenIssuer</TokenTypeImplClass>
++                <PersistAccessTokenAlias>true</PersistAccessTokenAlias>
++            </SupportedTokenType>
++        </SupportedTokenTypes-->
+
+         <!--
+             Defines the grant types that will filter user claims based on user consent in their responses such as
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/fido-device-store.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/fido-device-store.sql
+@@ -0,0 +1,5 @@
++UPDATE FIDO_DEVICE_STORE
++SET USER_NAME = `pseudonym`
++WHERE USER_NAME = `username`
++      AND DOMAIN_NAME = `user_store_domain`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/um-system-user.sql.properties
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/um-system-user.sql.properties
+@@ -0,0 +1,1 @@
++type=DOMAIN_APPENDED
+
+--- dbscripts/identity/postgresql.sql
++++ dbscripts/identity/postgresql.sql
+@@ -334,6 +334,18 @@
+
+ ALTER TABLE SP_FEDERATED_IDP ADD CONSTRAINT STEP_ID_CONSTRAINT FOREIGN KEY (ID) REFERENCES SP_AUTH_STEP (ID) ON DELETE CASCADE;
+
++DROP TABLE IF EXISTS SP_CLAIM_DIALECT;
++DROP SEQUENCE IF EXISTS SP_CLAIM_DIALECT_SEQ;
++CREATE SEQUENCE SP_CLAIM_DIALECT_SEQ;
++CREATE TABLE SP_CLAIM_DIALECT (
++	    	ID INTEGER DEFAULT NEXTVAL('SP_CLAIM_DIALECT_SEQ'),
++	    	TENANT_ID INTEGER NOT NULL,
++	    	SP_DIALECT VARCHAR (512) NOT NULL,
++	   		APP_ID INTEGER NOT NULL,
++        PRIMARY KEY (ID));
++
++ALTER TABLE SP_CLAIM_DIALECT ADD CONSTRAINT DIALECTID_APPID_CONSTRAINT FOREIGN KEY (APP_ID) REFERENCES SP_APP (ID) ON DELETE CASCADE;
++
+ DROP TABLE IF EXISTS SP_CLAIM_MAPPING;
+ DROP SEQUENCE IF EXISTS SP_CLAIM_MAPPING_SEQ;
+ CREATE SEQUENCE SP_CLAIM_MAPPING_SEQ;
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/cm-receipt.sql.properties
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/cm-receipt.sql.properties
+@@ -0,0 +1,1 @@
++type=DOMAIN_APPENDED
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-password-history-data.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-password-history-data.sql
+@@ -0,0 +1,5 @@
++UPDATE IDN_PASSWORD_HISTORY_DATA
++SET USER_NAME = `pseudonym`
++WHERE USER_NAME = `username`
++      AND USER_DOMAIN = `user_store_domain`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-thrift-session.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-thrift-session.sql
+@@ -0,0 +1,4 @@
++UPDATE IDN_THRIFT_SESSION
++SET USER_NAME = `pseudonym`
++WHERE USER_NAME = `username`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/config.json
++++ repository/components/tools/forget-me/ext/user-store/conf/config.json
+@@ -0,0 +1,40 @@
++{
++  "processors" : [
++    "rdbms", "user-store"
++  ],
++  "directories": [
++    {
++      "dir": "sql",
++      "type": "rdbms",
++      "processor" : "rdbms"
++    },
++    {
++      "dir": "user-store",
++      "type": "user-store",
++      "processor" : "user-store"
++    }
++  ],
++  "extensions": [
++    {
++      "dir": "../../../../../../conf/datasources",
++      "type": "datasource",
++      "processor" : "rdbms",
++      "properties" : [
++        {"identity": "WSO2_CARBON_DB"}
++      ]
++    },
++    {
++      "dir": "../../../../../../../",
++      "type": "user-store",
++      "processor" : "user-store",
++      "properties" : [
++        {
++          "handler-mapping;org.wso2.carbon.user.core.ldap.ReadWriteLDAPUserStoreManager":"read-write-ldap-handler",
++          "handler-mapping;org.wso2.carbon.user.core.jdbc.JDBCUserStoreManager":"jdbc-handler",
++          "handler-mapping;org.wso2.carbon.user.core.ldap.ActiveDirectoryUserStoreManager":"read-write-ldap-handler"
++        }
++      ]
++    }
++  ]
++}
++
+
+--- dbscripts/identity/mysql.sql
++++ dbscripts/identity/mysql.sql
+@@ -299,6 +299,15 @@
+
+ ALTER TABLE SP_FEDERATED_IDP ADD CONSTRAINT STEP_ID_CONSTRAINT FOREIGN KEY (ID) REFERENCES SP_AUTH_STEP (ID) ON DELETE CASCADE;
+
++CREATE TABLE IF NOT EXISTS SP_CLAIM_DIALECT (
++	   	ID INTEGER NOT NULL AUTO_INCREMENT,
++	   	TENANT_ID INTEGER NOT NULL,
++	   	SP_DIALECT VARCHAR (512) NOT NULL,
++	   	APP_ID INTEGER NOT NULL,
++	   	PRIMARY KEY (ID));
++
++ALTER TABLE SP_CLAIM_DIALECT ADD CONSTRAINT DIALECTID_APPID_CONSTRAINT FOREIGN KEY (APP_ID) REFERENCES SP_APP (ID) ON DELETE CASCADE;
++
+ CREATE TABLE IF NOT EXISTS SP_CLAIM_MAPPING (
+             ID INTEGER NOT NULL AUTO_INCREMENT,
+             TENANT_ID INTEGER NOT NULL,
+
+--- dbscripts/identity/oracle_rac.sql
++++ dbscripts/identity/oracle_rac.sql
+@@ -369,6 +369,26 @@
+ /
+ ALTER TABLE SP_FEDERATED_IDP ADD CONSTRAINT STEP_ID_CONSTRAINT FOREIGN KEY (ID) REFERENCES SP_AUTH_STEP (ID) ON DELETE CASCADE
+ /
++CREATE TABLE SP_CLAIM_DIALECT (
++	    	ID INTEGER,
++	    	TENANT_ID INTEGER NOT NULL,
++	    	SP_DIALECT VARCHAR (512) NOT NULL,
++	   		APP_ID INTEGER NOT NULL,
++        PRIMARY KEY (ID))
++/
++CREATE SEQUENCE SP_CLAIM_DIALECT_SEQ START WITH 1 INCREMENT BY 1 CACHE 20 ORDER
++/
++CREATE OR REPLACE TRIGGER SP_CLAIM_DIALECT_SEQ
++            BEFORE INSERT
++            ON SP_CLAIM_DIALECT
++            REFERENCING NEW AS NEW
++            FOR EACH ROW
++               BEGIN
++                   SELECT SP_CLAIM_DIALECT_SEQ.nextval INTO :NEW.ID FROM dual;
++               END;
++/
++ALTER TABLE SP_CLAIM_DIALECT ADD CONSTRAINT DIALECTID_APPID_CONSTRAINT FOREIGN KEY (APP_ID) REFERENCES SP_APP (ID) ON DELETE CASCADE
++/
+ CREATE TABLE SP_CLAIM_MAPPING (
+ 	    	ID INTEGER,
+ 	    	TENANT_ID INTEGER NOT NULL,
+
+--- repository/conf/health-check-config.xml
++++ repository/conf/health-check-config.xml
+@@ -0,0 +1,36 @@
++<?xml version="1.0" encoding="ISO-8859-1"?>
++<!--
++~ Copyright (c) 2018, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
++~
++~ Licensed under the Apache License, Version 2.0 (the "License");
++~ you may not use this file except in compliance with the License.
++~ You may obtain a copy of the License at
++~
++~ http://www.apache.org/licenses/LICENSE-2.0
++~
++~ Unless required by applicable law or agreed to in writing, software
++~ distributed under the License is distributed on an "AS IS" BASIS,
++~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
++~ See the License for the specific language governing permissions and
++~ limitations under the License.
++ -->
++
++<Server xmlns="http://wso2.org/projects/carbon/carbon.xml">
++
++    <CarbonHealthCheckConfigs>
++
++        <Enable>false</Enable>
++
++        <HealthCheckers>
++            <HealthChecker name="DataSourceHealthChecker" orderId="97" enable="true">
++                <!--<Property name="monitored.datasources">jdbc/WSO2CarbonDB,jdbc/WSO2MetricsDB,jdbc/WSO2UMDB</Property>-->
++                <Property name="pool.usage.limit.percentage">80</Property>
++            </HealthChecker>
++            <HealthChecker name="SuperTenantUSHealthChecker" orderId="98" enable="true">
++                <!--<Property name="monitored.user.stores">primary,sec</Property>-->
++            </HealthChecker>
++        </HealthCheckers>
++
++    </CarbonHealthCheckConfigs>
++</Server>
++
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-recovery-data.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-recovery-data.sql
+@@ -0,0 +1,5 @@
++UPDATE IDN_RECOVERY_DATA
++SET USER_NAME = `pseudonym`
++WHERE USER_NAME = `username`
++      AND USER_DOMAIN = `user_store_domain`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/um-system-user.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/um-system-user.sql
+@@ -0,0 +1,4 @@
++UPDATE UM_SYSTEM_USER
++SET UM_USER_NAME = `pseudonym`
++WHERE UM_USER_NAME = `username`
++      AND UM_TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/wf-request.sql.properties
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/wf-request.sql.properties
+@@ -0,0 +1,1 @@
++type=DOMAIN_APPENDED
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-identity-user-data.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-identity-user-data.sql
+@@ -0,0 +1,4 @@
++UPDATE IDN_IDENTITY_USER_DATA
++SET USER_NAME = `pseudonym`
++WHERE USER_NAME =  `username`
++      AND TENANT_ID = `tenant_id`
+
+--- dbscripts/identity/db2.sql
++++ dbscripts/identity/db2.sql
+@@ -376,6 +376,15 @@
+ /
+ ALTER TABLE SP_FEDERATED_IDP ADD CONSTRAINT STEP_ID_CONSTRAINT FOREIGN KEY (ID) REFERENCES SP_AUTH_STEP (ID) ON DELETE CASCADE
+ /
++CREATE TABLE IF NOT EXISTS SP_CLAIM_DIALECT (
++	   	ID INTEGER NOT NULL,
++	   	TENANT_ID INTEGER NOT NULL,
++	   	SP_DIALECT VARCHAR (512) NOT NULL,
++	   	APP_ID INTEGER NOT NULL,
++	   	PRIMARY KEY (ID))
++/
++ALTER TABLE SP_CLAIM_DIALECT ADD CONSTRAINT DIALECTID_APPID_CONSTRAINT FOREIGN KEY (APP_ID) REFERENCES SP_APP (ID) ON DELETE CASCADE
++/
+ CREATE TABLE SP_CLAIM_MAPPING (
+ 	    	ID INTEGER NOT NULL,
+ 	    	TENANT_ID INTEGER NOT NULL,
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-oauth2-authorization-code.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-oauth2-authorization-code.sql
+@@ -0,0 +1,5 @@
++UPDATE IDN_OAUTH2_AUTHORIZATION_CODE
++SET AUTHZ_USER = `pseudonym`, SUBJECT_IDENTIFIER = `pseudonym`
++WHERE AUTHZ_USER = `username`
++      AND USER_DOMAIN = `user_store_domain`
++      AND TENANT_ID = `tenant_id`
+
+--- dbscripts/identity/h2.sql
++++ dbscripts/identity/h2.sql
+@@ -293,7 +293,16 @@
+
+ ALTER TABLE SP_FEDERATED_IDP ADD CONSTRAINT STEP_ID_CONSTRAINT FOREIGN KEY (ID) REFERENCES SP_AUTH_STEP (ID) ON DELETE CASCADE;
+
+-CREATE TABLE IF NOT EXISTS SP_CLAIM_MAPPING ( 
++CREATE TABLE IF NOT EXISTS SP_CLAIM_DIALECT (
++	   	ID INTEGER NOT NULL AUTO_INCREMENT,
++	   	TENANT_ID INTEGER NOT NULL,
++	   	SP_DIALECT VARCHAR (512) NOT NULL,
++	   	APP_ID INTEGER NOT NULL,
++	   	PRIMARY KEY (ID));
++
++ALTER TABLE SP_CLAIM_DIALECT ADD CONSTRAINT DIALECTID_APPID_CONSTRAINT FOREIGN KEY (APP_ID) REFERENCES SP_APP (ID) ON DELETE CASCADE;
++
++CREATE TABLE IF NOT EXISTS SP_CLAIM_MAPPING (
+ 	   	ID INTEGER NOT NULL AUTO_INCREMENT, 
+ 	   	TENANT_ID INTEGER NOT NULL, 
+ 	   	IDP_CLAIM VARCHAR (512) NOT NULL , 
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-user-account-association.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-user-account-association.sql
+@@ -0,0 +1,5 @@
++UPDATE IDN_USER_ACCOUNT_ASSOCIATION
++SET USER_NAME = `pseudonym`
++WHERE USER_NAME = `username`
++      AND DOMAIN_NAME = `user_store_domain`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/sp-app.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/sp-app.sql
+@@ -0,0 +1,5 @@
++UPDATE SP_APP
++SET USERNAME = `pseudonym`
++WHERE USERNAME = `username`
++      AND USER_STORE = `user_store_domain`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/wf-bps-profile.sql.properties
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/wf-bps-profile.sql.properties
+@@ -0,0 +1,1 @@
++type=DOMAIN_APPENDED
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-openid-users-rps.sql.properties
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-openid-users-rps.sql.properties
+@@ -0,0 +1,1 @@
++type=DOMAIN_APPENDED
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-oauth1a-request-token.sql.properties
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-oauth1a-request-token.sql.properties
+@@ -0,0 +1,1 @@
++type=DOMAIN_APPENDED
+
+--- dbscripts/identity/oracle.sql
++++ dbscripts/identity/oracle.sql
+@@ -370,6 +370,26 @@
+ /
+ ALTER TABLE SP_FEDERATED_IDP ADD CONSTRAINT STEP_ID_CONSTRAINT FOREIGN KEY (ID) REFERENCES SP_AUTH_STEP (ID) ON DELETE CASCADE
+ /
++CREATE TABLE SP_CLAIM_DIALECT (
++	    	ID INTEGER,
++	    	TENANT_ID INTEGER NOT NULL,
++	    	SP_DIALECT VARCHAR (512) NOT NULL,
++	   		APP_ID INTEGER NOT NULL,
++        PRIMARY KEY (ID))
++/
++CREATE SEQUENCE SP_CLAIM_DIALECT_SEQ START WITH 1 INCREMENT BY 1 NOCACHE
++/
++CREATE OR REPLACE TRIGGER SP_CLAIM_DIALECT_SEQ
++            BEFORE INSERT
++            ON SP_CLAIM_DIALECT
++            REFERENCING NEW AS NEW
++            FOR EACH ROW
++               BEGIN
++                   SELECT SP_CLAIM_DIALECT_SEQ.nextval INTO :NEW.ID FROM dual;
++               END;
++/
++ALTER TABLE SP_CLAIM_DIALECT ADD CONSTRAINT DIALECTID_APPID_CONSTRAINT FOREIGN KEY (APP_ID) REFERENCES SP_APP (ID) ON DELETE CASCADE
++/
+ CREATE TABLE SP_CLAIM_MAPPING (
+ 	    	ID INTEGER,
+ 	    	TENANT_ID INTEGER NOT NULL,
+
+--- repository/conf/claim-config.xml
++++ repository/conf/claim-config.xml
+@@ -2013,6 +2013,190 @@
+ 				<MappedLocalClaim>http://wso2.org/claims/identity/verifyEmail</MappedLocalClaim>
+ 			</Claim>
+ 		</Dialect>
++		<Dialect dialectURI="http://eidas.europa.eu/attributes/naturalperson">
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/naturalperson/PersonIdentifier</ClaimURI>
++				<DisplayName>Person Identifier</DisplayName>
++				<AttributeID>scimId</AttributeID>
++				<Description>Person Identifier</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/userid</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/naturalperson/CurrentFamilyName</ClaimURI>
++				<DisplayName>Current Family Name</DisplayName>
++				<AttributeID>sn</AttributeID>
++				<Description>Current Family Name</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/lastname</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/naturalperson/CurrentGivenName</ClaimURI>
++				<DisplayName>Current Given Name</DisplayName>
++				<AttributeID>givenName</AttributeID>
++				<Description>Current Given Name</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/givenname</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/naturalperson/DateOfBirth</ClaimURI>
++				<DisplayName>Date of birth</DisplayName>
++				<AttributeID>dateOfBirth</AttributeID>
++				<Description>Date of birth</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/dob</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/naturalperson/BirthName</ClaimURI>
++				<DisplayName>Birth Name</DisplayName>
++				<AttributeID>uid</AttributeID>
++				<Description>Birth Name</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/username</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/naturalperson/PlaceOfBirth</ClaimURI>
++				<DisplayName>Place of Birth</DisplayName>
++				<AttributeID>country</AttributeID>
++				<Description>Place of Birth</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/country</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/naturalperson/CurrentAddress</ClaimURI>
++				<DisplayName>Current Address</DisplayName>
++				<AttributeID>localityAddress</AttributeID>
++				<Description>Current Address</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/addresses</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/naturalperson/Gender</ClaimURI>
++				<DisplayName>Gender</DisplayName>
++				<AttributeID>gender</AttributeID>
++				<Description>Gender</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/gender</MappedLocalClaim>
++			</Claim>
++		</Dialect>
++		<Dialect dialectURI="http://eidas.europa.eu/attributes/legalperson">
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/legalperson/LegalPersonIdentifier</ClaimURI>
++				<DisplayName>Legal Person Identifier</DisplayName>
++				<AttributeID>externalId</AttributeID>
++				<Description>Legal Person Identifier</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/externalid</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/legalperson/LegalName</ClaimURI>
++				<DisplayName>Legal Person Name</DisplayName>
++				<AttributeID>organizationName</AttributeID>
++				<Description>Legal Person Name</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/organization</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/legalperson/LegalPersonAddress</ClaimURI>
++				<DisplayName>Legal Person Address</DisplayName>
++				<AttributeID>localityAddress</AttributeID>
++				<Description>Legal Person Address</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/addresses</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/legalperson/VATRegistrationNumber</ClaimURI>
++				<DisplayName>VAT Registration Number</DisplayName>
++				<AttributeID>im</AttributeID>
++				<Description>VAT Registration Number</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/im</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/legalperson/TaxReference</ClaimURI>
++				<DisplayName>Tax Reference</DisplayName>
++				<AttributeID>postalcode</AttributeID>
++				<Description>Tax Reference</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/postalcode</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/legalperson/D-2012-17-EUIdentifier</ClaimURI>
++				<DisplayName>EU Identifier</DisplayName>
++				<AttributeID>region</AttributeID>
++				<Description>EU Identifier</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/region</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/legalperson/LEI</ClaimURI>
++				<DisplayName>LEI</DisplayName>
++				<AttributeID>stateorprovince</AttributeID>
++				<Description>LEI</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/stateorprovince</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/legalperson/EORI</ClaimURI>
++				<DisplayName>Economic Operator Registration and Identification</DisplayName>
++				<AttributeID>departmentNumber</AttributeID>
++				<Description>Economic Operator Registration and Identification</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/department</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/legalperson/SEED</ClaimURI>
++				<DisplayName>System for Exchange of Excise Data Identifier</DisplayName>
++				<AttributeID>nickName</AttributeID>
++				<Description>System for Exchange of Excise Data Identifier</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/nickname</MappedLocalClaim>
++			</Claim>
++			<Claim>
++				<ClaimURI>http://eidas.europa.eu/attributes/legalperson/SIC</ClaimURI>
++				<DisplayName>Standard Industrial Classification</DisplayName>
++				<AttributeID>formattedName</AttributeID>
++				<Description>Standard Industrial Classification</Description>
++				<Required />
++				<DisplayOrder>1</DisplayOrder>
++				<SupportedByDefault />
++				<MappedLocalClaim>http://wso2.org/claims/formattedName</MappedLocalClaim>
++			</Claim>
++		</Dialect>
+ 	</Dialects>
+ </ClaimConfig>
+
+
+--- repository/components/tools/forget-me/conf/log-config/is-patterns.xml
++++ repository/components/tools/forget-me/conf/log-config/is-patterns.xml
+@@ -53,5 +53,16 @@
+         <replacePattern>${username}</replacePattern>
+     </pattern>
+
++    <pattern key="pattern7">
++        <detectPattern>(.)*(Action=)(Authentication|Add-User|Change-Password-by-User|Change-Password-by-Administrator|Delete-User|Set-User-Claim-Value|Set-User-Claim-Value|Set-User-Claim-Values|Delete-User-Claim-Values|Delete-User-Claim-Value|Update-Roles-of-User|Get-User-Claim-Value|Get-User-Claim-Values|Get-Roles-of-User)(\s)(Target=)(${userstoreDomain}\\${username}|${username})(\s)(.)*
++        </detectPattern>
++        <replacePattern>${username}</replacePattern>
++    </pattern>
++
++    <pattern key="pattern8">
++        <detectPattern>(.)*(Target=)(.)*(\s)*(Data=)(.)*(\"Users\":)(.)*(\"${userstoreDomain}\\${username}\"|\"${username}\")(.)*</detectPattern>
++        <replacePattern>${username}</replacePattern>
++    </pattern>
++
+ </patterns>
+
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-oauth1a-request-token.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-oauth1a-request-token.sql
+@@ -0,0 +1,4 @@
++UPDATE IDN_OAUTH1A_REQUEST_TOKEN
++SET AUTHZ_USER = `pseudonym`
++WHERE AUTHZ_USER =  `username`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/wf-bps-profile.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/wf-bps-profile.sql
+@@ -0,0 +1,4 @@
++UPDATE WF_BPS_PROFILE
++SET USERNAME = `pseudonym`
++WHERE USERNAME = `username`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/wf-request.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/wf-request.sql
+@@ -0,0 +1,4 @@
++UPDATE WF_REQUEST
++SET CREATED_BY = `pseudonym`
++WHERE CREATED_BY = `username`
++      AND TENANT_ID = `tenant_id`
+
+--- repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-saml2-assertion-store.sql
++++ repository/components/tools/forget-me/ext/user-store/conf/sql/identity/idn-saml2-assertion-store.sql
+@@ -0,0 +1,3 @@
++UPDATE IDN_SAML2_ASSERTION_STORE
++SET SAML2_SUBJECT = `pseudonym`
++WHERE SAML2_SUBJECT = `username`
+
